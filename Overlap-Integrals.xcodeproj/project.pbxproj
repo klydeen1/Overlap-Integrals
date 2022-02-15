@@ -17,6 +17,8 @@
 		65EE9E3C27BB6DD000391B5C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EE9E1227BB6DCD00391B5C /* ContentView.swift */; };
 		65EE9E3D27BB6DD000391B5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65EE9E1327BB6DD000391B5C /* Assets.xcassets */; };
 		65EE9E3E27BB6DD000391B5C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 65EE9E1327BB6DD000391B5C /* Assets.xcassets */; };
+		65EE9E5427BB750B00391B5C /* IntegralCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EE9E5327BB750B00391B5C /* IntegralCalculator.swift */; };
+		65EE9E5527BB750B00391B5C /* IntegralCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EE9E5327BB750B00391B5C /* IntegralCalculator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +51,7 @@
 		65EE9E3127BB6DD000391B5C /* Tests macOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Tests macOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		65EE9E3527BB6DD000391B5C /* Tests_macOS.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOS.swift; sourceTree = "<group>"; };
 		65EE9E3727BB6DD000391B5C /* Tests_macOSLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tests_macOSLaunchTests.swift; sourceTree = "<group>"; };
+		65EE9E5327BB750B00391B5C /* IntegralCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegralCalculator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +102,7 @@
 			children = (
 				65EE9E1127BB6DCD00391B5C /* Overlap_IntegralsApp.swift */,
 				65EE9E1227BB6DCD00391B5C /* ContentView.swift */,
+				65EE9E5327BB750B00391B5C /* IntegralCalculator.swift */,
 				65EE9E1327BB6DD000391B5C /* Assets.xcassets */,
 			);
 			path = Shared;
@@ -300,6 +304,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65EE9E3B27BB6DD000391B5C /* ContentView.swift in Sources */,
+				65EE9E5427BB750B00391B5C /* IntegralCalculator.swift in Sources */,
 				65EE9E3927BB6DD000391B5C /* Overlap_IntegralsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -309,6 +314,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				65EE9E3C27BB6DD000391B5C /* ContentView.swift in Sources */,
+				65EE9E5527BB750B00391B5C /* IntegralCalculator.swift in Sources */,
 				65EE9E3A27BB6DD000391B5C /* Overlap_IntegralsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
