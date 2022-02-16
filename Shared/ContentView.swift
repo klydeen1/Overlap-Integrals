@@ -10,11 +10,12 @@ import SwiftUI
 struct ContentView: View {
     @State var nString = "10000"
     @State var rString = "1.0"
-    @State var boxXString = "5.0"
+    @State var boxXString = "10.0"
     @State var boxYString = "5.0"
     @State var boxZString = "5.0"
     @State var integral1s1sString = ""
     @State var integral1s2pxString = ""
+    @State var error1s1sString = ""
     
     // Setup the GUI to monitor the data from the Monte Carlo Integral Calculator
     @ObservedObject var integrator = IntegralCalculator()
@@ -31,28 +32,30 @@ struct ContentView: View {
                 }
                 .padding(.top, 5.0)
                 
-                VStack(alignment: .center) {
-                    Text("Box Length (x)")
-                        .font(.callout)
-                        .bold()
-                    TextField("# Box Length (x)", text: $boxXString)
-                        .padding()
-                }
-                
-                VStack(alignment: .center) {
-                    Text("Box Length (y)")
-                        .font(.callout)
-                        .bold()
-                    TextField("# Box Length (y)", text: $boxYString)
-                        .padding()
-                }
-                
-                VStack(alignment: .center) {
-                    Text("Box Length (z)")
-                        .font(.callout)
-                        .bold()
-                    TextField("# Box Length (z)", text: $boxZString)
-                        .padding()
+                HStack {
+                    VStack(alignment: .center) {
+                        Text("Box Length (x)")
+                            .font(.callout)
+                            .bold()
+                        TextField("# Box Length (x)", text: $boxXString)
+                            .padding()
+                    }
+                    
+                    VStack(alignment: .center) {
+                        Text("Box Length (y)")
+                            .font(.callout)
+                            .bold()
+                        TextField("# Box Length (y)", text: $boxYString)
+                            .padding()
+                    }
+                    
+                    VStack(alignment: .center) {
+                        Text("Box Length (z)")
+                            .font(.callout)
+                            .bold()
+                        TextField("# Box Length (z)", text: $boxZString)
+                            .padding()
+                    }
                 }
                 
                 VStack(alignment: .center) {
@@ -63,12 +66,22 @@ struct ContentView: View {
                         .padding()
                 }
                 
-                VStack(alignment: .center) {
-                    Text("Overlap Integral: 1s and 1s")
-                        .font(.callout)
-                        .bold()
-                    TextField("# Overlap Integral: 1s and 1s", text: $integral1s1sString)
-                        .padding()
+                HStack {
+                    VStack(alignment: .center) {
+                        Text("Overlap Integral: 1s and 1s")
+                            .font(.callout)
+                            .bold()
+                        TextField("# Overlap Integral: 1s and 1s", text: $integral1s1sString)
+                            .padding()
+                    }
+                    
+                    VStack(alignment: .center) {
+                        Text("Log of Error in Overlap Integral: 1s and 1s")
+                            .font(.callout)
+                            .bold()
+                        TextField("# Log of Error in Overlap Integral: 1s and 1s", text: $error1s1sString)
+                            .padding()
+                    }
                 }
                 
                 VStack(alignment: .center) {
@@ -107,6 +120,7 @@ struct ContentView: View {
         await integrator.calculateOverlapIntegrals()
         
         integral1s1sString = integrator.integral1s1sString
+        error1s1sString = integrator.error1s1sString
         integral1s2pxString = integrator.integral1s2pxString
         
         integrator.setButtonEnable(state: true)
@@ -120,6 +134,8 @@ struct ContentView: View {
         boxZString = "5.0"
         integral1s1sString =  ""
         integral1s2pxString = ""
+        error1s1sString = ""
+        integrator.error1s1s = 0.0
         integrator.integral1s1s = 0.0
         integrator.integral1s2px = 0.0
     }
