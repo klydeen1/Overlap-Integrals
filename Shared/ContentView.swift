@@ -8,8 +8,11 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var nString = "100000"
+    @State var nString = "10000"
     @State var rString = "1.0"
+    @State var boxXString = "5.0"
+    @State var boxYString = "5.0"
+    @State var boxZString = "5.0"
     @State var integral1s1sString = ""
     @State var integral1s2pxString = ""
     
@@ -29,10 +32,34 @@ struct ContentView: View {
                 .padding(.top, 5.0)
                 
                 VStack(alignment: .center) {
-                    Text("Interatomic spacing R/a0")
+                    Text("Box Length (x)")
                         .font(.callout)
                         .bold()
-                    TextField("# Interatomic spacing R/a0", text: $rString)
+                    TextField("# Box Length (x)", text: $boxXString)
+                        .padding()
+                }
+                
+                VStack(alignment: .center) {
+                    Text("Box Length (y)")
+                        .font(.callout)
+                        .bold()
+                    TextField("# Box Length (y)", text: $boxYString)
+                        .padding()
+                }
+                
+                VStack(alignment: .center) {
+                    Text("Box Length (z)")
+                        .font(.callout)
+                        .bold()
+                    TextField("# Box Length (z)", text: $boxZString)
+                        .padding()
+                }
+                
+                VStack(alignment: .center) {
+                    Text("Interatomic spacing R in units a0")
+                        .font(.callout)
+                        .bold()
+                    TextField("# Interatomic spacing R in units a0", text: $rString)
                         .padding()
                 }
                 
@@ -73,6 +100,9 @@ struct ContentView: View {
         
         integrator.n = Int(nString)!
         integrator.R = Double(rString)!
+        integrator.boxXLength = Double(boxXString)!
+        integrator.boxYLength = Double(boxYString)!
+        integrator.boxZLength = Double(boxZString)!
         
         await integrator.calculateOverlapIntegrals()
         
@@ -83,7 +113,11 @@ struct ContentView: View {
     }
     
     func clear() {
-        nString = "100"
+        nString = "10000"
+        rString = "1.0"
+        boxXString = "5.0"
+        boxYString = "5.0"
+        boxZString = "5.0"
         integral1s1sString =  ""
         integral1s2pxString = ""
         integrator.integral1s1s = 0.0

@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-typealias integrationFunctionHandler = (_ input: Double) -> Double
-
 class IntegralCalculator: NSObject, ObservableObject {
     @Published var nString = ""
     @Published var rString = ""
@@ -21,37 +19,26 @@ class IntegralCalculator: NSObject, ObservableObject {
     
     var n = 1
     var R = 1.0
+    var boxXLength = 5.0
+    var boxYLength = 5.0
+    var boxZLength = 5.0
     var integral1s1s = 0.0
     var integral1s2px = 0.0
     let a0 = 5.2917721090380e-11
     
     func calculateOverlapIntegrals() async {
-        // Change upper and lower limits
-        (integral1s1s, integral1s2px) = await calculateOverlapIntegrals(lowerLimit: 0.0, upperLimit: R, N: n)
-        //integral1s1s = i1
+        (integral1s1s, integral1s2px) = await overlapIntegrals(boundingBoxX: boxXLength, boundingBoxY: boxYLength, boundingBoxZ: boxZLength, R: R, N: n)
+        
+        // Find the error for the 1s1s integral
+        // Add code here.
+        
         await updateIntegral1s1sString(text: "\(integral1s1s)")
         await updateIntegral1s2pxString(text: "\(integral1s2px)")
     }
     
-    // General reuseable function
-    func calculateIntegralMVT(lowerLimit: Double, upperLimit: Double, N: Int, functionToBeIntegrated: integrationFunctionHandler) async -> Double {
-        var integral = 0.0
-        var sum = 0.0
-        
-        for _ in stride(from: 1, through: N, by: 1) {
-            let xi = Double.random(in: lowerLimit...upperLimit)
-            sum += functionToBeIntegrated(xi)
-        }
-        integral = (upperLimit - lowerLimit)*sum/Double(N)
-        return integral
-    }
-    
-    // Example function
-    func eToTheMinusX(_ input: Double) -> Double {
-        return exp(-input)
-    }
-    
-    func calculateOverlapIntegrals(lowerLimit: Double, upperLimit: Double, N: Int) async -> (Double, Double) {
+    func overlapIntegrals(boundingBoxX: Double, boundingBoxY: Double, boundingBoxZ: Double, R: Double, N: Int) async -> (Double, Double) {
+        let myBox = BoundingBox()
+        let boxArea = myBox.calculateSurfaceArea(numberOfSides: 6, side1Length: boundingBoxX, side2Length: boundingBoxY, side3Lenth: boundingBoxZ)
         var sum1s1s = 0.0
         var sum1s2px = 0.0
         var calculatedIntegral1s1s = 0.0
@@ -59,19 +46,37 @@ class IntegralCalculator: NSObject, ObservableObject {
         
         // Sum over 1 through N
         for _ in stride(from: 1, through: N, by: 1) {
-            // Calculate random x values separately so the errors are independent
-            let ri1s1s = Double.random(in: lowerLimit...upperLimit)
-            let ri1s2px = Double.random(in: lowerLimit...upperLimit)
+            // Calculate random x, y, and z values inside the bounding box
+            let x = 0.0
+            let y = 0.0
+            let z = 0.0
+            
+            // Convert the x, y, z values to spherical coordinates for the two wavefunctions
+            let r1 = sqrt(pow(x,2) + pow(y,2) + pow(z,2))
+            let theta1 = 0.0
+            let phi1 = 0.0
+            let r2 = 0.0
+            let theta2 = 0.0
+            let phi2 = 0.0
             
             // Calculate the sums for computing the average
-            sum1s1s += exp(-R-2.0*ri1s1s) * pow(ri1s1s,2)
-            sum1s2px += sin(ri1s2px)
+            await sum1s1s += wavefunction1s(r: r1, theta: theta1, phi: phi1) * wavefunction1s(r: r2, theta: theta2, phi: phi2)
+            await sum1s2px += wavefunction1s(r: r1, theta: theta1, phi: phi1) * wavefunction2px(r: r2, theta: theta2, phi: phi2)
         }
-        calculatedIntegral1s1s = 4.0/a0 * (upperLimit - lowerLimit) * sum1s1s/Double(N)
-        // calculatedIntegral1s1s = (upperLimit - lowerLimit) * sum1s1s/Double(N)
-        calculatedIntegral1s2px = (upperLimit - lowerLimit) * sum1s2px/Double(N)
+        calculatedIntegral1s1s = boxArea * sum1s1s/Double(N)
+        calculatedIntegral1s2px = boxArea * sum1s2px/Double(N)
         
         return (calculatedIntegral1s1s, calculatedIntegral1s2px)
+    }
+    
+    func wavefunction1s(r: Double, theta: Double, phi: Double) async -> Double {
+        let psi = 5.0
+        return psi
+    }
+    
+    func wavefunction2px(r: Double, theta: Double, phi: Double) async -> Double {
+        let psi = 5.0
+        return psi
     }
     
     
