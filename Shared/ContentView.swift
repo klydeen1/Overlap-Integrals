@@ -6,8 +6,16 @@
 //
 
 import SwiftUI
+import CorePlot
+
+typealias plotDataType = [CPTScatterPlotField : Double]
 
 struct ContentView: View {
+    // Setup the GUI to monitor the data
+    @ObservedObject var integrator = IntegralCalculator()
+    // @ObservedObject var plotData = PlotClass()
+    // @ObservedObject private var calculator = CalculatePlotData()
+    
     @State var nString = "10000"
     @State var rString = "1.0"
     @State var boxXString = "10.0"
@@ -16,9 +24,7 @@ struct ContentView: View {
     @State var integral1s1sString = ""
     @State var integral1s2pxString = ""
     @State var error1s1sString = ""
-    
-    // Setup the GUI to monitor the data from the Monte Carlo Integral Calculator
-    @ObservedObject var integrator = IntegralCalculator()
+    @State var selector = 0
                                                       
     var body: some View {
         HStack{
@@ -92,13 +98,29 @@ struct ContentView: View {
                         .padding()
                 }
                 
-                Button("Cycle Calculation", action: {Task.init{await self.calculateIntegrals()}})
-                    .padding()
-                    .disabled(integrator.enableButton == false)
+                HStack {
+                    Button("Cycle Calculation", action: {Task.init{await self.calculateIntegrals()}})
+                        .padding()
+                        .disabled(integrator.enableButton == false)
+                    
+                    Button("Clear", action: {self.clear()})
+                        .padding()
+                        .disabled(integrator.enableButton == false)
+                }
                 
-                Button("Clear", action: {self.clear()})
-                    .padding(.bottom, 5.0)
-                    .disabled(integrator.enableButton == false)
+                HStack {
+                    Button("Plot 1s-1s Overlap", action: {Task.init{
+                        self.selector = 0
+                        await self.calculateIntegrals()
+                        }})
+                        .padding()
+                           
+                    Button("Plot 1s-2px Overlap", action: {Task.init {
+                        self.selector = 1
+                        await self.calculateIntegrals()
+                        }})
+                        .padding()
+                }
                 
                 if (!integrator.enableButton){
                     ProgressView()

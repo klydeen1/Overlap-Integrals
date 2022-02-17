@@ -123,21 +123,21 @@ class IntegralCalculator: NSObject, ObservableObject {
     /// updateIntegral1s1sString
     /// The function runs on the main thread so it can update the GUI
     /// - Parameter text: contains the string containing the current value of the integral
-    @MainActor func updateIntegral1s1sString(text:String) {
+    @MainActor func updateIntegral1s1sString(text:String) async {
         self.integral1s1sString = text
     }
     
     /// updateError1s1sString
     /// The function runs on the main thread so it can update the GUI
     /// - Parameter text: contains the string containing the current value of the integral
-    @MainActor func updateError1s1sString(text:String) {
+    @MainActor func updateError1s1sString(text:String) async {
         self.error1s1sString = text
     }
     
     /// updateIntegral1s2pxString
     /// The function runs on the main thread so it can update the GUI
     /// - Parameter text: contains the string containing the current value of the integral
-    @MainActor func updateIntegral1s2pxString(text:String) {
+    @MainActor func updateIntegral1s2pxString(text:String) async {
         self.integral1s2pxString = text
     }
     
