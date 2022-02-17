@@ -13,8 +13,8 @@ typealias plotDataType = [CPTScatterPlotField : Double]
 struct ContentView: View {
     // Setup the GUI to monitor the data
     @ObservedObject var integrator = IntegralCalculator()
-    // @ObservedObject var plotData = PlotClass()
-    // @ObservedObject private var calculator = CalculatePlotData()
+    @ObservedObject var plotDataModel = PlotDataClass(fromLine: true)
+    // @EnvironmentObject var plotData: PlotClass
     
     @State var nString = "10000"
     @State var rString = "1.0"
@@ -111,25 +111,37 @@ struct ContentView: View {
                 HStack {
                     Button("Plot 1s-1s Overlap", action: {Task.init{
                         self.selector = 0
-                        await self.calculateIntegrals()
+                        await self.generatePlots()
                         }})
                         .padding()
+                        .disabled(integrator.enableButton == false)
                            
                     Button("Plot 1s-2px Overlap", action: {Task.init {
                         self.selector = 1
-                        await self.calculateIntegrals()
+                        await self.generatePlots()
                         }})
                         .padding()
+                        .disabled(integrator.enableButton == false)
                 }
                 
                 if (!integrator.enableButton){
                     ProgressView()
                 }
             }
-            .padding()
+            // Stop the window shrinking to zero.
+            Spacer()
+            CorePlot(dataForPlot: $plotDataModel.plotData, changingPlotParameters: $plotDataModel.changingPlotParameters)
+                .setPlotPadding(left: 10)
+                .setPlotPadding(right: 10)
+                .setPlotPadding(top: 10)
+                .setPlotPadding(bottom: 10)
+                .padding()
+            Divider()
         }
     }
     
+    /// calculateIntegrals
+    /// Calculate the 1s-1s and 1s-2px overlap integrals at the user selected parameters
     func calculateIntegrals() async {
         integrator.setButtonEnable(state: false)
         
@@ -148,10 +160,33 @@ struct ContentView: View {
         integrator.setButtonEnable(state: true)
     }
     
+    @MainActor func setupPlotDataModel() {
+        integrator.plotDataModel = self.plotDataModel
+    }
+    
+    /// generatePlots
+    /// Plots either the 1s-1s or 1s-2px overlap integral vs. R
+    /// The size of the bounding box and the number of iterations for the integrals are taken from user input
+    func generatePlots() async {
+        setupPlotDataModel()
+        
+        integrator.setButtonEnable(state: false)
+        
+        integrator.n = Int(nString)!
+        integrator.boxXLength = Double(boxXString)!
+        integrator.boxYLength = Double(boxYString)!
+        integrator.boxZLength = Double(boxZString)!
+        
+        await integrator.getPlotData(selector: self.selector)
+        
+        integrator.setButtonEnable(state: true)
+    }
+    
     func clear() {
+        plotDataModel.zeroData()
         nString = "10000"
         rString = "1.0"
-        boxXString = "5.0"
+        boxXString = "10.0"
         boxYString = "5.0"
         boxZString = "5.0"
         integral1s1sString =  ""

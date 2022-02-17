@@ -26,6 +26,7 @@ class IntegralCalculator: NSObject, ObservableObject {
     var integral1s2px = 0.0
     var error1s1s = 0.0
     let a0 = 5.2917721090380e-11
+    var plotDataModel: PlotDataClass? = nil
     
     /// calculateOverlapIntegrals
     /// Runs the function to calculate the overlap integrals and updates the results
@@ -83,6 +84,69 @@ class IntegralCalculator: NSObject, ObservableObject {
         calculatedIntegral1s2px = boxArea * sum1s2px/Double(N)
         
         return (calculatedIntegral1s1s, error1s1s, calculatedIntegral1s2px)
+    }
+    
+    /// getPlotData
+    /// Sets plot parameters and runs the function to generate data for the plots
+    /// - Parameters:
+    ///   - selector: 0 will get the plot data for the 1s-1s overlap integral and 1 will get the plot data for the 1s-2px overlap integral
+    func getPlotData(selector: Int) async {
+        await plotDataModel!.zeroData()
+        // Set x-axis limits
+        await plotDataModel!.changingPlotParameters.xMax = 6.5
+        await plotDataModel!.changingPlotParameters.xMin = -0.5
+        // Set other shared attributes
+        await plotDataModel!.changingPlotParameters.xLabel = "R in units of a0"
+        await plotDataModel!.changingPlotParameters.yLabel = "Overlap integral"
+        await plotDataModel!.changingPlotParameters.lineColor = .red()
+        if selector == 0 {
+            // Set y-axis limits
+            await plotDataModel!.changingPlotParameters.yMax = 2.0
+            await plotDataModel!.changingPlotParameters.yMin = -0.1
+            
+            // Set title
+            await plotDataModel!.changingPlotParameters.title = "Overlap integral 1s-1s vs. R"
+            
+            // Get plot data
+            await generatePlotData(selector: selector)
+        }
+        else if selector == 1 {
+            await plotDataModel!.zeroData()
+            // Set y-axis limits
+            await plotDataModel!.changingPlotParameters.yMax = -2.0
+            await plotDataModel!.changingPlotParameters.yMin = -10.0
+            
+            // Set title
+            await plotDataModel!.changingPlotParameters.title = "Log(Overlap integral) 1s-2px vs. R"
+            
+            // Get plot data
+            await generatePlotData(selector: selector)
+        }
+    }
+    
+    /// generatePlotData
+    /// Calculates the overlap integrals over an array of R and plots the data
+    /// - Parameters:
+    ///   - selector: 0 will get the plot data for the 1s-1s overlap integral and 1 will get the plot data for the 1s-2px overlap integral
+    func generatePlotData(selector: Int) async {
+        var plotIntegral1s1s: Double
+        var plotError1s1s: Double
+        var plotIntegral1s2px: Double
+        var plotData :[plotDataType] =  []
+        
+        // Iterate over a range of R
+        for plotR in stride(from: 0.0, through: 6.0, by: 0.5) {
+            (plotIntegral1s1s, plotError1s1s, plotIntegral1s2px) = await overlapIntegrals(boundingBoxX: boxXLength, boundingBoxY: boxYLength, boundingBoxZ: boxZLength, R: plotR, N: n)
+            var plotDataPoint: plotDataType = [.X: 0.0, .Y: 0.0]
+            if selector == 0 {
+                plotDataPoint = [.X: plotR, .Y: plotIntegral1s1s]
+            }
+            else if selector == 1 {
+                plotDataPoint = [.X: plotR, .Y: log10(plotIntegral1s2px)]
+            }
+            plotData.append(contentsOf: [plotDataPoint])
+        }
+        await plotDataModel!.appendData(dataPoint: plotData)
     }
     
     /// calculate1s1sError
