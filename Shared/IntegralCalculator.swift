@@ -20,8 +20,8 @@ class IntegralCalculator: NSObject, ObservableObject {
     var n = 1
     var R = 1.0
     var boxXLength = 10.0
-    var boxYLength = 5.0
-    var boxZLength = 5.0
+    var boxYLength = 10.0
+    var boxZLength = 10.0
     var integral1s1s = 0.0
     var integral1s2px = 0.0
     var error1s1s = 0.0
@@ -48,7 +48,7 @@ class IntegralCalculator: NSObject, ObservableObject {
     /// - returns: a 3-tuple containing the overlap integral of the 1s-1s orbitals, the error in the 1s-1s integral, and the overlap integral of the 1s-2px orbitals
     func overlapIntegrals(boundingBoxX: Double, boundingBoxY: Double, boundingBoxZ: Double, R: Double, N: Int) async -> (Double, Double, Double) {
         let myBox = BoundingBox()
-        let boxArea = myBox.calculateSurfaceArea(numberOfSides: 6, side1Length: boundingBoxX, side2Length: boundingBoxY, side3Lenth: boundingBoxZ)
+        let boxVol = myBox.calculateVolume(side1Length: boundingBoxX, side2Length: boundingBoxY, side3Lenth: boundingBoxZ)
         var sum1s1s = 0.0
         var sum1s2px = 0.0
         var calculatedIntegral1s1s = 0.0
@@ -63,25 +63,26 @@ class IntegralCalculator: NSObject, ObservableObject {
             let z = Double.random(in: (-boundingBoxZ/2)...(boundingBoxZ/2))
             
             // Convert the x, y, z values to spherical coordinates for the two wavefunctions
-            // The first wavefunction will be located at the origin and the second will be at (R,0,0)
+            // The first wavefunction will be located at the origin and will have spherical coordinates (r1, theta1, phi1)
+            // The second wavefunction will be centered at (R,0,0) and will have spherical coordinates (r2, theta2, phi2)
             let r1 = sqrt(pow(x,2) + pow(y,2) + pow(z,2))
-            let theta1 = atan(y/x)
-            let phi1 = atan(sqrt(pow(x,2) + pow(y,2))/z)
+            let theta1 = atan2(sqrt(pow(x,2) + pow(y,2)), z)
+            let phi1 = atan2(y, x)
             let r2 = sqrt(pow((x-R),2) + pow(y,2) + pow(z,2))
-            let theta2 = atan(y/(x-R))
-            let phi2 = atan(sqrt(pow((x-R),2) + pow(y,2))/z)
+            let theta2 = atan2(sqrt(pow((x-R),2) + pow(y,2)), z)
+            let phi2 = atan2(y, (x-R))
             
             // Calculate the sums for computing the average
             await sum1s1s += wavefunction1s(r: r1) * wavefunction1s(r: r2)
             await sum1s2px += wavefunction2px(r: r1, theta: theta1, phi: phi1) * wavefunction1s(r: r2)
         }
         // Multiply the sums by approproate constants
-        sum1s1s *= 1/Double.pi//*pow(R,3))
-        sum1s2px *= 1/(32*Double.pi)//*pow(R,3)
+        sum1s1s *= 1/Double.pi
+        sum1s2px *= 1/(Double.pi*4.0*sqrt(2.0))
         // Calculate the integrals by multiplying the average function value by the bounding box area
-        calculatedIntegral1s1s = boxArea * sum1s1s/Double(N)
+        calculatedIntegral1s1s = boxVol * sum1s1s/Double(N)
         let error1s1s = await calculate1s1sError(R: R, numericalIntegral: calculatedIntegral1s1s)
-        calculatedIntegral1s2px = boxArea * sum1s2px/Double(N)
+        calculatedIntegral1s2px = boxVol * sum1s2px/Double(N)
         
         return (calculatedIntegral1s1s, error1s1s, calculatedIntegral1s2px)
     }
@@ -93,7 +94,7 @@ class IntegralCalculator: NSObject, ObservableObject {
     func getPlotData(selector: Int) async {
         await plotDataModel!.zeroData()
         // Set x-axis limits
-        await plotDataModel!.changingPlotParameters.xMax = 6.5
+        await plotDataModel!.changingPlotParameters.xMax = 13.5
         await plotDataModel!.changingPlotParameters.xMin = -0.5
         // Set other shared attributes
         await plotDataModel!.changingPlotParameters.xLabel = "R in units of a0"
@@ -101,7 +102,7 @@ class IntegralCalculator: NSObject, ObservableObject {
         await plotDataModel!.changingPlotParameters.lineColor = .red()
         if selector == 0 {
             // Set y-axis limits
-            await plotDataModel!.changingPlotParameters.yMax = 2.0
+            await plotDataModel!.changingPlotParameters.yMax = 1.0
             await plotDataModel!.changingPlotParameters.yMin = -0.1
             
             // Set title
@@ -113,11 +114,11 @@ class IntegralCalculator: NSObject, ObservableObject {
         else if selector == 1 {
             await plotDataModel!.zeroData()
             // Set y-axis limits
-            await plotDataModel!.changingPlotParameters.yMax = -2.0
-            await plotDataModel!.changingPlotParameters.yMin = -10.0
+            await plotDataModel!.changingPlotParameters.yMax = 1.0
+            await plotDataModel!.changingPlotParameters.yMin = -0.1
             
             // Set title
-            await plotDataModel!.changingPlotParameters.title = "Log(Overlap integral) 1s-2px vs. R"
+            await plotDataModel!.changingPlotParameters.title = "Overlap integral 1s-2px vs. R"
             
             // Get plot data
             await generatePlotData(selector: selector)
@@ -135,14 +136,14 @@ class IntegralCalculator: NSObject, ObservableObject {
         var plotData :[plotDataType] =  []
         
         // Iterate over a range of R
-        for plotR in stride(from: 0.0, through: 6.0, by: 0.5) {
+        for plotR in stride(from: 0.0, through: 13.0, by: 0.5) {
             (plotIntegral1s1s, plotError1s1s, plotIntegral1s2px) = await overlapIntegrals(boundingBoxX: boxXLength, boundingBoxY: boxYLength, boundingBoxZ: boxZLength, R: plotR, N: n)
             var plotDataPoint: plotDataType = [.X: 0.0, .Y: 0.0]
             if selector == 0 {
                 plotDataPoint = [.X: plotR, .Y: plotIntegral1s1s]
             }
             else if selector == 1 {
-                plotDataPoint = [.X: plotR, .Y: log10(plotIntegral1s2px)]
+                plotDataPoint = [.X: plotR, .Y: plotIntegral1s2px]
             }
             plotData.append(contentsOf: [plotDataPoint])
         }

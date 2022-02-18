@@ -16,11 +16,11 @@ struct ContentView: View {
     @ObservedObject var plotDataModel = PlotDataClass(fromLine: true)
     // @EnvironmentObject var plotData: PlotClass
     
-    @State var nString = "10000"
+    @State var nString = "100000"
     @State var rString = "1.0"
     @State var boxXString = "10.0"
-    @State var boxYString = "5.0"
-    @State var boxZString = "5.0"
+    @State var boxYString = "10.0"
+    @State var boxZString = "10.0"
     @State var integral1s1sString = ""
     @State var integral1s2pxString = ""
     @State var error1s1sString = ""
