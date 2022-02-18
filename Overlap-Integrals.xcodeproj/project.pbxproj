@@ -33,6 +33,10 @@
 		65EE9E7027BDDDCF00391B5C /* PlotDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65EE9E6E27BDDDCF00391B5C /* PlotDataClass.swift */; };
 		65EE9E7327BDDE7C00391B5C /* CorePlot in Frameworks */ = {isa = PBXBuildFile; productRef = 65EE9E7227BDDE7C00391B5C /* CorePlot */; };
 		65EE9E7627BDDEB200391B5C /* CorePlot in Frameworks */ = {isa = PBXBuildFile; productRef = 65EE9E7527BDDEB200391B5C /* CorePlot */; };
+		65EE9E7927BF1CA100391B5C /* ErrorPlot.png in Resources */ = {isa = PBXBuildFile; fileRef = 65EE9E7727BF1CA100391B5C /* ErrorPlot.png */; };
+		65EE9E7A27BF1CA100391B5C /* ErrorPlot.png in Resources */ = {isa = PBXBuildFile; fileRef = 65EE9E7727BF1CA100391B5C /* ErrorPlot.png */; };
+		65EE9E7B27BF1CA100391B5C /* Discussion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 65EE9E7827BF1CA100391B5C /* Discussion.txt */; };
+		65EE9E7C27BF1CA100391B5C /* Discussion.txt in Resources */ = {isa = PBXBuildFile; fileRef = 65EE9E7827BF1CA100391B5C /* Discussion.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,6 +76,8 @@
 		65EE9E6827BDDDA500391B5C /* CorePlot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CorePlot.swift; sourceTree = "<group>"; };
 		65EE9E6B27BDDDC100391B5C /* PlotClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlotClass.swift; sourceTree = "<group>"; };
 		65EE9E6E27BDDDCF00391B5C /* PlotDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlotDataClass.swift; sourceTree = "<group>"; };
+		65EE9E7727BF1CA100391B5C /* ErrorPlot.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ErrorPlot.png; sourceTree = "<group>"; };
+		65EE9E7827BF1CA100391B5C /* Discussion.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = Discussion.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +117,8 @@
 		65EE9E0B27BB6DCD00391B5C = {
 			isa = PBXGroup;
 			children = (
+				65EE9E7827BF1CA100391B5C /* Discussion.txt */,
+				65EE9E7727BF1CA100391B5C /* ErrorPlot.png */,
 				65EE9E1027BB6DCD00391B5C /* Shared */,
 				65EE9E1F27BB6DD000391B5C /* macOS */,
 				65EE9E2827BB6DD000391B5C /* Tests iOS */,
@@ -316,6 +324,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				65EE9E3D27BB6DD000391B5C /* Assets.xcassets in Resources */,
+				65EE9E7B27BF1CA100391B5C /* Discussion.txt in Resources */,
+				65EE9E7927BF1CA100391B5C /* ErrorPlot.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -324,6 +334,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				65EE9E3E27BB6DD000391B5C /* Assets.xcassets in Resources */,
+				65EE9E7C27BF1CA100391B5C /* Discussion.txt in Resources */,
+				65EE9E7A27BF1CA100391B5C /* ErrorPlot.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
